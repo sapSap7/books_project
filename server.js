@@ -53,14 +53,16 @@ const server = http.createServer((req, res) => {
 
         res.writeHead(201, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Book added", book: newBook }));
+        return;
       } catch (err) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: "Invalid JSON or server error" }));
       }
     });
+    return;
   }
 
-  if (req.method === "DELETE" && req.url.startsWith("/books")) {
+  if (req.method === "DELETE" && req.url.startsWith("/delete-book/")) {
     const id = req.url.split("/")[2]; // to extract id from the route /books/:id
     let books = loadBooks();
     const initialLength = books.length;
@@ -69,15 +71,17 @@ const server = http.createServer((req, res) => {
     if (books.length === initialLength) {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ error: "Book not found" }));
+      return;
     } else {
       saveBooks(books);
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "Book deleted" }));
+      return;
     }
-    return;
   } else {
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ error: "Route not found" }));
+    return;
   }
 });
 
