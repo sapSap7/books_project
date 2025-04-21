@@ -6,7 +6,7 @@ export default function DeleteBook() {
   function handleDelete() {
     if (!id) return;
 
-    fetch(`http://localhost:3000/books/${id}`, {
+    fetch(`http://localhost:3000/delete-book/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
@@ -17,15 +17,5 @@ export default function DeleteBook() {
       .catch((err) => console.error("Error deleting book:" + err));
   }
 
-  return (
-    <>
-      <h3>Delete Book</h3>
-      <input
-        placeholder="Enter book ID"
-        value={id}
-        onChange={(e) => setId(e.target.value)}
-      />
-      <button onClick={handleDelete}>Delete</button>
-    </>
-  );
+  return <></>;
 }

@@ -4,34 +4,42 @@ every time a book is added, it will be added to the json file
 */
 
 import React, { useState } from "react";
+import "./PostBooks.css";
 
 export default function PostBooks() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    fetch("http://localhost:3000/add-book", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title, author }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Book added");
-        setTitle("");
-        setAuthor("");
-      })
-      .catch((err) => console.error("Error adding book:" + err));
+    try {
+      const response = await fetch("http://localhost:3000/add-book", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title, author }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to add book");
+      }
+
+      const data = await response.json();
+      alert("Book added");
+      setTitle("");
+      setAuthor("");
+    } catch (err) {
+      console.error("Error adding book:", err.message);
+      alert("Error: " + err.message);
+    }
   }
 
   return (
     <>
-      <h2>Add Book</h2>
-      <form onSubmit={handleSubmit}>
+      <form className="inputs" onSubmit={handleSubmit}>
         <input
           type="text"
           required
@@ -46,7 +54,7 @@ export default function PostBooks() {
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
         />
-        <button type="submit">Add</button>
+        <button type="submit">Add to Library</button>
       </form>
     </>
   );
